@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "icon-forge",
-  "compatibility_date": "2025-06-01",
+  "compatibility_date": "2025-06-02",
   "main": "./src/index.tsx"
 }
