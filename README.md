@@ -75,12 +75,12 @@ Generate a custom file icon SVG
 **Parameters:**
 - `ext` or `extension` (required) - File extension (1-10 alphanumeric characters)
 - `textColor` (optional) - Hex color for text (e.g., `#ffffff`)
-- `fontSize` (optional) - Font size in pixels (10-200)
+- `fontSize` (optional) - Font size in pixels (10-40)
 - `bgColor` (optional) - Background color in hex (e.g., `#3498db`)
 
 **Example:**
 ```
-GET /file-icon?ext=png&textColor=#0078d4&fontSize=120&bgColor=#f44336
+GET /file-icon?ext=png&textColor=#0078d4&fontSize=25&bgColor=#f44336
 ```
 
 #### `GET /health`
@@ -112,10 +112,10 @@ All successful requests return SVG content with appropriate headers:
 ### Custom Styled Icons
 ```html
 <!-- Large TypeScript icon with custom colors -->
-<img src="http://localhost:3000/file-icon?ext=ts&textColor=#ffffff&fontSize=150&bgColor=#3178c6" alt="TypeScript file">
+<img src="http://localhost:3000/file-icon?ext=ts&textColor=#ffffff&fontSize=25&bgColor=#3178c6" alt="TypeScript file">
 
 <!-- Small JSON icon -->
-<img src="http://localhost:3000/file-icon?ext=json&fontSize=80&bgColor=#ff9500" alt="JSON file">
+<img src="http://localhost:3000/file-icon?ext=json&fontSize=20&bgColor=#ff9500" alt="JSON file">
 ```
 
 ### Integration Examples
@@ -134,7 +134,7 @@ All successful requests return SVG content with appropriate headers:
 ```jsx
 const FileIcon = ({ extension, size = 32 }) => (
   <img 
-    src={`/file-icon?ext=${extension}&fontSize=${size * 2}`}
+    src={`/file-icon?ext=${extension}&fontSize=${Math.min(size, 40)}`}
     width={size}
     height={size}
     alt={`${extension} file`}

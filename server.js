@@ -38,11 +38,9 @@ app.get('/file-icon', async (req, res) => {
     // Validate textColor if provided (hex color)
     if (textColor && !/^#[0-9A-Fa-f]{6}$/.test(textColor)) {
       return res.status(400).json({ error: 'Invalid textColor. Must be a hex color (e.g., #0078d4)' });
-    }
-
-    // Validate fontSize if provided
-    if (customFontSize && (isNaN(customFontSize) || customFontSize < 10 || customFontSize > 200)) {
-      return res.status(400).json({ error: 'Invalid fontSize. Must be a number between 10 and 200' });
+    }    // Validate fontSize if provided
+    if (customFontSize && (isNaN(customFontSize) || customFontSize < 10 || customFontSize > 40)) {
+      return res.status(400).json({ error: 'Invalid fontSize. Must be a number between 10 and 40' });
     }
 
     // Validate bgColor if provided (hex color)
@@ -55,9 +53,9 @@ app.get('/file-icon', async (req, res) => {
     const svgTemplate = await fs.readFile(templatePath, 'utf8');
     
     const listOfBgColors = ['#F44336', '#E91E63', '#9C27B0', '#673AB7', '#3F51B5', '#2196F3', '#03A9F4', '#00BCD4'];    // Determine font size
-    let fontSize = customFontSize || '100'; // Use custom font size if provided, otherwise default
+    let fontSize = customFontSize || '26'; // Use custom font size if provided, otherwise default
     if (!customFontSize && fileExtension.length >= 5) {
-      fontSize = '75'; // Reduce font size for longer extensions if no custom size provided
+      fontSize = '20'; // Reduce font size for longer extensions if no custom size provided
     }
 
     // Determine text color
@@ -113,7 +111,7 @@ app.get('/api/docs', (req, res) => {
           ext: 'File extension (e.g., png) - required',
           extension: 'File extension (e.g., jpg) - alias for ext',
           textColor: 'Text color in hex format (e.g., #0078d4) - optional',
-          fontSize: 'Font size in pixels (10-200) - optional',
+          fontSize: 'Font size in pixels (10-40) - optional',
           bgColor: 'Background color in hex format (e.g., #f44336) - optional',
         },
         example: '/file-icon?ext=png&textColor=#0078d4&fontSize=28&bgColor=#f44336'
@@ -126,19 +124,20 @@ app.get('/api/docs', (req, res) => {
     },    examples: [
       'GET /file-icon?ext=png',
       'GET /file-icon?ext=js&textColor=#f39c12', 
-      'GET /file-icon?ext=pdf&fontSize=150&bgColor=#e74c3c',
-      'GET /file-icon?ext=docx&textColor=#0078d4&fontSize=28&bgColor=#3498db',
-      'GET /file-icon?ext=json&textColor=#ff6b35&fontSize=24&bgColor=#2ecc71'
-    ],    validation: {
+      'GET /file-icon?ext=pdf&fontSize=35&bgColor=#e74c3c',
+      'GET /file-icon?ext=docx&textColor=#0078d4&fontSize=32&bgColor=#3498db',
+      'GET /file-icon?ext=json&textColor=#ff6b35&fontSize=28&bgColor=#2ecc71'
+    ],validation: {
       ext: 'Required. Alphanumeric characters only, max 10 characters',
       textColor: 'Optional. Must be valid hex color (#000000 to #FFFFFF)',
-      fontSize: 'Optional. Number between 10 and 200',
+      fontSize: 'Optional. Number between 10 and 40',
       bgColor: 'Optional. Must be valid hex color (#000000 to #FFFFFF)'
-    },    notes: [
+    },    
+    notes: [
       'All endpoints return SVG content with appropriate headers',
       'File extensions are converted to uppercase in the generated icon',
       'Default text color is white (#ffffff)',
-      'Default font size is 100px (or 75px for extensions 5+ characters)',
+      'Default font size is 26px (or 20px for extensions 5+ characters)',
       'Default font family is Fredoka',
       'Default font weight is 500',
       'SVG files are cached for better performance',
