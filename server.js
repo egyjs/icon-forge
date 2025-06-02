@@ -66,21 +66,22 @@ app.get('/file-icon', async (req, res) => {
     // Determine background color
     const backgroundColorToUse = bgColor || listOfBgColors[getStableIndex(fileExtension, listOfBgColors.length)];
 
-    console.log(`Stable index for ${fileExtension}: ${getStableIndex(fileExtension, listOfBgColors.length)}`);
     
     // Replace the placeholders with the provided values
     const svgContent = svgTemplate
       .replace('{{ext}}', fileExtension.toUpperCase())
       .replace('{{color}}', textColorToUse)
       .replace('{{bgColor}}', backgroundColorToUse)
-      .replace('{{fontSize}}', fontSize);
+      .replace('{{fontSize}}', fontSize);    // Set appropriate headers for SVG
 
-    // Set appropriate headers for SVG
-    res.set({
+    const headers = {
       'Content-Type': 'image/svg+xml',
       'Content-Length': Buffer.byteLength(svgContent, 'utf8'),
-      'Cache-Control': 'public, max-age=86400'
-    });
+      'Cache-Control': 'public, max-age=86400',
+      'Content-Disposition': `inline; filename="${fileExtension}.svg"`
+    };
+
+    res.set(headers);
 
     res.send(svgContent);
 
@@ -113,7 +114,7 @@ app.get('/api/docs', (req, res) => {
           extension: 'File extension (e.g., jpg) - alias for ext',
           textColor: 'Text color in hex format (e.g., #0078d4) - optional',
           fontSize: 'Font size in pixels (10-200) - optional',
-          bgColor: 'Background color in hex format (e.g., #f44336) - optional'
+          bgColor: 'Background color in hex format (e.g., #f44336) - optional',
         },
         example: '/file-icon?ext=png&textColor=#0078d4&fontSize=28&bgColor=#f44336'
       },
