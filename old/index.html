@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Icon Forge - Dynamic File Icon Generator API</title>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        /* CSS Variables for consistent theming */
+        
+    </style>
+</head>
+<body>    <div class="container">
+        <h1>🔥 Icon Forge - Dynamic File Icon Generator API</h1>
+        <div class="section">
+            <h2>Overview</h2>
+            <p>Icon Forge generates dynamic SVG file icons with custom file extensions and optional styling. Use the endpoints below to get SVG icons for any file type.</p>
+        </div><div class="section">
+            <h2>Endpoints</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Endpoint</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>GET</td>
+                        <td>/file-icon?ext=EXT</td>
+                        <td>Generate icon for extension (e.g. <code>ext=js</code>)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="section">
+            <h2>Parameters</h2>
+            <ul>
+                <li><b>ext</b> or <b>extension</b>: File extension (alphanumeric, max 10 chars)</li>
+                <li><b>fontSize</b>: Font size in px</li>
+                <li><b>textColor</b>: Text color (hex, e.g. <code>#0078d4</code>)</li>
+                <li><b>bgColor</b>: Background color (hex, e.g. <code>#3498db</code>)</li>
+            </ul>
+        </div>        <div class="section">
+            <h2>Examples</h2>            <div class="api-examples">
+                <h3>Basic Icon</h3>
+                <code style="color: #fff;">
+                    GET /file-icon?ext=js
+                </code>
+                <br><br>                <h3>Custom Styled Icon</h3>
+                <code style="color: #fff;">
+                    GET /file-icon?ext=docx&textColor=#0078d4&fontSize=25&bgColor=#3498db
+                </code>
+                <br><br>
+                <h3>Custom Background Color</h3>
+                <code style="color: #fff;">
+                    GET /file-icon?ext=json&textColor=#ff6b35&fontSize=25&bgColor=#2ecc71
+                </code>
+            </div>
+        </div>        <div class="section" x-data="iconGenerator()">
+            <h2>Quick Test</h2>
+            <div class="form-row">
+                <label for="ext">Extension:</label>
+                <input 
+                    type="text" 
+                    x-model="extension" 
+                    maxlength="10" 
+                    placeholder="e.g., js, pdf, png"
+                    @input="clearResult">
+                <button type="submit" @click="generateIcon" :disabled="!extension.trim()">Generate Icon</button>
+            </div>
+
+            <!-- Advanced Options -->
+            <div class="form-row">
+                <label>
+                    <input type="checkbox" x-model="showAdvanced" @change="clearResult"> 
+                    Use Advanced Options
+                </label>
+            </div>
+
+            <div x-show="showAdvanced" x-transition>
+                <div class="form-row">
+                    <label for="textColor">Text Color:</label>
+                    <input 
+                        type="color" 
+                        x-model="textColor" 
+                        @input="clearResult"
+                        style="width: 60px; height: 40px; padding: 0; border: 2px solid var(--border-light);">
+                    <input 
+                        type="text" 
+                        x-model="textColor" 
+                        placeholder="#ffffff"
+                        maxlength="7"
+                        @input="clearResult"
+                        style="flex: 0 0 100px;">
+                </div>                  <div class="form-row">
+                    <label for="fontSize">Font Size (px):</label>
+                    <input 
+                        type="range" 
+                        x-model="fontSize" 
+                        min="10" 
+                        max="40" 
+                        @input="clearResult"
+                        style="flex: 1;">
+                    <span x-text="fontSize + 'px'" style="flex: 0 0 60px; text-align: center;"></span>
+                </div>
+                
+                <div class="form-row">
+                    <label for="bgColor">Background Color:</label>
+                    <input 
+                        type="color" 
+                        x-model="bgColor" 
+                        @input="clearResult"
+                        style="width: 60px; height: 40px; padding: 0; border: 2px solid var(--border-light);">
+                    <input 
+                        type="text" 
+                        x-model="bgColor" 
+                        placeholder="#f44336"
+                        maxlength="7"
+                        @input="clearResult"
+                        style="flex: 0 0 100px;">
+                </div>
+            </div>
+            
+            <!-- Loading state -->
+            <div x-show="loading" class="loading">
+                <p>Generating icon...</p>
+            </div>
+            
+            <!-- Error state -->
+            <div x-show="error" x-text="error" class="error"></div>
+            
+            <!-- Success result -->
+            <div x-show="iconUrl && !loading && !error" class="result">
+                <div>
+                    <img :src="iconUrl" :alt="'Icon for .' + extension + ' files'" style="max-width:200px;">
+                </div>
+                <div class="result-container">
+                    <h4>Direct URL:</h4>
+                    <code x-text="iconUrl" class="url-display"></code>
+                    <button @click="copyToClipboard" type="button" class="success" style="color: #ffffff;">
+                        <span x-text="copied ? 'Copied!' : 'Copy URL'"></span>
+                    </button>
+                </div>
+            </div>        </div><div class="section footer">
+            <p>Made with <span style="color: var(--secondary-color)">&#10084;</span> by the Icon Forge community
+                | <a href="/api/docs">API JSON</a> | <a href="https://github.com/egyjs/icon-forge">GitHub</a></p>
+        </div>
+    </div>        
+    <script>        
+    function iconGenerator() {
+            return {                extension: 'png',
+                textColor: '#ffffff',
+                fontSize: 26,
+                bgColor: '',
+                showAdvanced: false,
+                iconUrl: '',
+                loading: false,
+                error: '',
+                copied: false,
+                
+                clearResult() {
+                    this.error = '';
+                    this.iconUrl = '';
+                },
+                
+                generateIcon() {
+                    if (!this.extension.trim()) {
+                        this.error = 'Please enter a file extension';
+                        return;
+                    }
+                    
+                    // Validate extension (alphanumeric only)
+                    if (!/^[a-zA-Z0-9]+$/.test(this.extension.trim())) {
+                        this.error = 'Extension must contain only letters and numbers';
+                        return;
+                    }
+                    
+                    this.loading = true;
+                    this.error = '';
+                    this.iconUrl = '';
+                    
+                    // Build query parameters
+                    const params = new URLSearchParams();
+                    params.append('ext', this.extension.trim());
+                      if (this.showAdvanced) {
+                        if (this.textColor && this.textColor !== '#ffffff') {
+                            params.append('textColor', this.textColor);
+                        }                        if (this.fontSize && this.fontSize !== 26) {
+                            params.append('fontSize', this.fontSize);
+                        }
+                        if (this.bgColor) {
+                            params.append('bgColor', this.bgColor);
+                        }
+                    }
+                    
+                    // Generate the icon URL
+                    const baseUrl = window.location.origin;
+                    const url = `${baseUrl}/file-icon?${params.toString()}`;
+                    
+                    // Test if the URL is valid by trying to load it
+                    const img = new Image();
+                    img.onload = () => {
+                        this.iconUrl = url;
+                        this.loading = false;
+                    };
+                    img.onerror = () => {
+                        this.error = 'Failed to generate icon. Please try again.';
+                        this.loading = false;
+                    };
+                    img.src = url;
+                },
+                
+                async copyToClipboard() {
+                    try {
+                        await navigator.clipboard.writeText(this.iconUrl);
+                        this.copied = true;
+                        setTimeout(() => {
+                            this.copied = false;
+                        }, 2000);
+                    } catch (err) {
+                        console.error('Failed to copy: ', err);
+                        // Fallback for older browsers
+                        const textArea = document.createElement('textarea');
+                        textArea.value = this.iconUrl;
+                        document.body.appendChild(textArea);
+                        textArea.select();
+                        document.execCommand('copy');
+                        document.body.removeChild(textArea);
+                        this.copied = true;
+                        setTimeout(() => {
+                            this.copied = false;
+                        }, 2000);
+                    }
+                },
+
+                init() {
+                    this.generateIcon();
+                }
+            }
+        }
+    </script>
+</body>
+</html>

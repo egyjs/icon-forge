@@ -380,7 +380,7 @@ This project is licensed under the ISC License - see the [LICENSE](LICENSE) file
 
 **⭐ Star this repository if you find it helpful!**
 
-Made with ❤️ by the Icon Forge community
+Made with ❤️ by the Egyjs
 
 [Website](https://egyjs.github.io/icon-forge) • [Documentation](http://localhost:3000) • [Contributing](CONTRIBUTING.md) • [License](LICENSE)
 
