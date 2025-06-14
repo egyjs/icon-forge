@@ -1,4 +1,4 @@
-# 🔥 Icon Forge - Dynamic File Icon Generator API
+# 🔥 Icon Forge - Dynamic File Icon Generator API 
 
 [![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-orange.svg)](https://workers.cloudflare.com/)
 [![Hono](https://img.shields.io/badge/Hono-4.7+-blue.svg)](https://hono.dev/)
