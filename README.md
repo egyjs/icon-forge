@@ -28,12 +28,12 @@ Transform any file extension into a stunning visual icon with our dynamic SVG ge
 See Icon Forge in action! Here are some examples of dynamically generated file icons:
 
 ### JavaScript Icon
-<img src="./examples/js.svg" alt="JavaScript Icon" width="100" height="100">
+<img src="https://icon-forge.el3zahaby.workers.dev/file-icon?ext=js" alt="JavaScript Icon" width="100" height="100">
 
 **Generated with:** `GET /file-icon?ext=js`
 
 ### EXE Icon  
-<img src="./examples/exe.svg" alt="Extension Icon" width="100" height="100">
+<img src="https://icon-forge.el3zahaby.workers.dev/file-icon?ext=exe" alt="Extension Icon" width="100" height="100">
 
 **Generated with:** `GET /file-icon?ext=exe`
 
